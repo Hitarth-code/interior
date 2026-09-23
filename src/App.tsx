@@ -11,34 +11,62 @@ import BudgetSection from './components/BudgetSection';
 import DesignVisualization from './components/DesignVisualization';
 import Footer from './components/Footer';
 import { DesignData } from './types';
-import { sampleDesignData } from './data/sampleData';
+import { analyzeImage } from './utils/imageAnalyzer';
+import { generateDesign } from './utils/designGenerator';
 
 export default function App() {
   const [step, setStep] = useState<'upload' | 'analyzing' | 'results'>('upload');
   const [designData, setDesignData] = useState<DesignData | null>(null);
-  const [selectedStyle, setSelectedStyle] = useState<string>('Modern');
+  const [selectedStyle, setSelectedStyle] = useState<string>('auto');
   const [budget, setBudget] = useState<string>('medium');
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
-  const handleAnalyze = () => {
+  const handleImageUpload = (imageDataUrl: string) => {
+    setUploadedImage(imageDataUrl);
+  };
+
+  const handleAnalyze = async () => {
+    if (!uploadedImage) {
+      alert('Please upload a room image first!');
+      return;
+    }
+
     setStep('analyzing');
-    setTimeout(() => {
-      setDesignData(sampleDesignData);
+
+    try {
+      // Analyze the uploaded image
+      const imageAnalysis = await analyzeImage(uploadedImage);
+
+      // Simulate processing time for better UX
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Generate unique design based on image analysis
+      const style = selectedStyle === 'auto' ? undefined : selectedStyle;
+      const design = generateDesign(imageAnalysis, style, budget);
+
+      setDesignData(design);
       setStep('results');
-    }, 3000);
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+      alert('Error analyzing image. Please try again with a different image.');
+      setStep('upload');
+    }
   };
 
   const handleReset = () => {
     setStep('upload');
     setDesignData(null);
+    setUploadedImage(null);
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-amber-50">
       <Header />
-      
+
       {step === 'upload' && (
         <UploadSection
           onAnalyze={handleAnalyze}
+          onImageUpload={handleImageUpload}
           selectedStyle={selectedStyle}
           setSelectedStyle={setSelectedStyle}
           budget={budget}
@@ -56,12 +84,12 @@ export default function App() {
               </svg>
             </div>
           </div>
-          <h2 className="mt-8 text-2xl font-bold text-slate-800">Analyzing Your Space...</h2>
+          <h2 className="mt-8 text-2xl font-bold text-slate-800">Analyzing Your Room...</h2>
           <p className="mt-3 text-slate-500 text-center max-w-md">
-            Our AI is examining room dimensions, lighting conditions, existing furniture, and structural elements to create your perfect design.
+            Our AI is examining your room's colors, lighting, spatial layout, and existing elements to create a personalized design just for you.
           </p>
-          <div className="mt-6 flex gap-2">
-            {['Detecting room type', 'Analyzing lighting', 'Evaluating space', 'Generating design'].map((item, i) => (
+          <div className="mt-6 flex flex-wrap gap-2 justify-center">
+            {['Extracting colors', 'Detecting style', 'Analyzing lighting', 'Generating design'].map((item, i) => (
               <span
                 key={item}
                 className="px-3 py-1 text-xs rounded-full bg-amber-100 text-amber-700 animate-pulse"
@@ -78,19 +106,19 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
           <div className="flex justify-between items-center mb-8 pt-6">
             <div>
-              <h2 className="text-3xl font-bold text-slate-800">Your Design is Ready!</h2>
-              <p className="text-slate-500 mt-1">Complete interior redesign recommendation</p>
+              <h2 className="text-3xl font-bold text-slate-800">Your Personalized Design is Ready!</h2>
+              <p className="text-slate-500 mt-1">Based on your room's unique characteristics</p>
             </div>
             <button
               onClick={handleReset}
               className="px-6 py-2.5 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition-colors font-medium"
             >
-              Start Over
+              Design Another Room
             </button>
           </div>
 
-          <DesignVisualization data={designData} />
-          
+          <DesignVisualization data={designData} uploadedImage={uploadedImage} />
+
           <div className="mt-12">
             <DesignRecommendation data={designData} />
           </div>
@@ -114,7 +142,7 @@ export default function App() {
           </div>
         </div>
       )}
-      
+
       <div className="mt-auto">
         <Footer />
       </div>
