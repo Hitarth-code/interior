@@ -1,0 +1,156 @@
+import { DesignData } from '../types';
+
+export const sampleDesignData: DesignData = {
+  designSummary: "A sophisticated Modern-Scandinavian fusion that maximizes natural light and creates a warm, inviting atmosphere. The design emphasizes clean lines, organic textures, and a harmonious color palette that makes the space feel larger and more open while maintaining cozy functionality.",
+  recommendedStyle: "Modern Scandinavian",
+  colorPalette: [
+    { name: "Warm White", hex: "#FAF8F5", usage: "Main walls & ceiling" },
+    { name: "Sage Green", hex: "#8B9E82", usage: "Accent wall" },
+    { name: "Warm Oak", hex: "#C4956A", usage: "Furniture & flooring" },
+    { name: "Soft Charcoal", hex: "#3D3D3D", usage: "Text accents & fixtures" },
+    { name: "Cream Linen", hex: "#F0E6D3", usage: "Textiles & upholstery" },
+    { name: "Terracotta", hex: "#C17B5A", usage: "Decorative accents" },
+  ],
+  wallPaint: {
+    primaryColor: "Warm White (#FAF8F5)",
+    accentColor: "Sage Green (#8B9E82)",
+    ceilingColor: "Pure White (#FFFFFF)",
+    finish: "Matte for walls, Satin for trim",
+  },
+  furniture: [
+    {
+      name: "L-Shaped Sectional Sofa",
+      placement: "Against the longest wall, facing windows",
+      size: "280cm × 180cm × 85cm",
+      material: "Linen upholstery in cream",
+      estimatedPrice: "₹85,000 - ₹1,20,000",
+    },
+    {
+      name: "Round Coffee Table",
+      placement: "Center of seating area",
+      size: "90cm diameter × 40cm height",
+      material: "Solid oak with matte finish",
+      estimatedPrice: "₹15,000 - ₹25,000",
+    },
+    {
+      name: "TV Console Unit",
+      placement: "Opposite the sofa, centered on wall",
+      size: "180cm × 45cm × 55cm",
+      material: "Walnut veneer with metal legs",
+      estimatedPrice: "₹25,000 - ₹40,000",
+    },
+    {
+      name: "Accent Armchair",
+      placement: "Corner near window, angled toward sofa",
+      size: "75cm × 80cm × 82cm",
+      material: "Boucle fabric in terracotta",
+      estimatedPrice: "₹35,000 - ₹55,000",
+    },
+    {
+      name: "Floating Wall Shelves",
+      placement: "Above TV unit, asymmetric arrangement",
+      size: "3 pieces: 80cm, 60cm, 40cm",
+      material: "Solid oak, same finish as coffee table",
+      estimatedPrice: "₹8,000 - ₹12,000",
+    },
+    {
+      name: "Side Table with Storage",
+      placement: "Next to armchair",
+      size: "45cm × 45cm × 55cm",
+      material: "Oak with woven rattan detail",
+      estimatedPrice: "₹12,000 - ₹18,000",
+    },
+  ],
+  lighting: [
+    {
+      type: "Ambient",
+      description: "Recessed LED panel lights (4000K warm white) distributed evenly across ceiling",
+      placement: "Ceiling, grid pattern",
+      icon: "💡",
+    },
+    {
+      type: "Task",
+      description: "Adjustable floor lamp with reading arm near the armchair",
+      placement: "Beside armchair",
+      icon: "🔦",
+    },
+    {
+      type: "Decorative",
+      description: "Pendant cluster (3 glass globes) above coffee table area",
+      placement: "Ceiling, centered over seating",
+      icon: "✨",
+    },
+    {
+      type: "Accent",
+      description: "LED strip lighting behind TV unit and under floating shelves",
+      placement: "Behind furniture, indirect",
+      icon: "🌟",
+    },
+    {
+      type: "Natural",
+      description: "Maximize window light with sheer linen curtains",
+      placement: "Windows",
+      icon: "☀️",
+    },
+  ],
+  decor: [
+    {
+      category: "Curtains",
+      items: ["Floor-length sheer linen curtains in off-white", "Blackout roller blinds behind sheers"],
+      icon: "🪟",
+    },
+    {
+      category: "Rugs",
+      items: ["Large jute/sisal area rug (240×180cm) under seating area", "Small wool accent rug near armchair"],
+      icon: "🟫",
+    },
+    {
+      category: "Wall Art",
+      items: ["Large abstract canvas in sage/cream tones (120×80cm)", "Set of 3 botanical prints in oak frames"],
+      icon: "🖼️",
+    },
+    {
+      category: "Plants",
+      items: ["Large fiddle leaf fig in corner (150cm)", "Trailing pothos on floating shelves", "Small succulent arrangement on coffee table"],
+      icon: "🌿",
+    },
+    {
+      category: "Mirrors",
+      items: ["Round brass-framed mirror on accent wall (60cm diameter)"],
+      icon: "🪞",
+    },
+    {
+      category: "Decorative Objects",
+      items: ["Ceramic vase collection on shelves", "Woven basket storage", "Candle holders in matte black", "Coffee table books stack"],
+      icon: "🏺",
+    },
+  ],
+  flooring: {
+    recommendation: "Engineered hardwood planks in herringbone pattern for visual interest",
+    color: "Natural warm oak",
+    material: "European oak engineered wood, 190mm wide planks",
+  },
+  budget: {
+    currency: "INR",
+    range: "₹2,50,000 - ₹4,00,000",
+    breakdown: [
+      { category: "Furniture", amount: "₹1,80,000 - ₹2,70,000" },
+      { category: "Lighting", amount: "₹25,000 - ₹45,000" },
+      { category: "Paint & Wall Treatment", amount: "₹15,000 - ₹25,000" },
+      { category: "Flooring", amount: "₹45,000 - ₹80,000" },
+      { category: "Curtains & Textiles", amount: "₹20,000 - ₹35,000" },
+      { category: "Decor & Accessories", amount: "₹15,000 - ₹30,000" },
+      { category: "Plants & Planters", amount: "₹5,000 - ₹10,000" },
+    ],
+  },
+  analysis: {
+    roomType: "Living Room",
+    roomSize: "Approximately 320 sq ft (20ft × 16ft)",
+    existingFurniture: ["Old fabric sofa", "Wooden coffee table", "Basic TV stand", "Bookshelf"],
+    wallCondition: "Good condition, minor scuff marks, currently painted beige",
+    flooring: "Existing ceramic tiles in beige, some grout discoloration",
+    lighting: "Single ceiling point with basic fixture, limited natural light from one window",
+    windows: "One large window (6ft × 5ft) on the shorter wall, east-facing",
+    availableSpace: "Good open floor area after furniture rearrangement, ~180 sq ft usable",
+  },
+};
