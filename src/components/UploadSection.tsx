@@ -2,44 +2,66 @@ import { useState, useRef } from 'react';
 
 interface Props {
   onAnalyze: () => void;
+  onImageUpload: (imageDataUrl: string) => void;
   selectedStyle: string;
   setSelectedStyle: (style: string) => void;
   budget: string;
   setBudget: (budget: string) => void;
 }
 
-const styles = ['Modern', 'Minimalist', 'Contemporary', 'Luxury', 'Scandinavian', 'Industrial', 'Bohemian'];
-const budgets = [
-  { value: 'low', label: 'Budget Friendly', range: '₹50K - ₹1.5L' },
-  { value: 'medium', label: 'Mid Range', range: '₹1.5L - ₹3.5L' },
-  { value: 'high', label: 'Premium', range: '₹3.5L - ₹7L' },
-  { value: 'luxury', label: 'Luxury', range: '₹7L+' },
+const styles = [
+  { value: 'auto', label: '🤖 Auto-Detect' },
+  { value: 'Modern', label: 'Modern' },
+  { value: 'Minimalist', label: 'Minimalist' },
+  { value: 'Contemporary', label: 'Contemporary' },
+  { value: 'Luxury', label: 'Luxury' },
+  { value: 'Scandinavian', label: 'Scandinavian' },
+  { value: 'Industrial', label: 'Industrial' },
+  { value: 'Bohemian', label: 'Bohemian' },
 ];
 
-export default function UploadSection({ onAnalyze, selectedStyle, setSelectedStyle, budget, setBudget }: Props) {
+const budgets = [
+  { value: 'low', label: 'Budget Friendly', range: '₹80K - ₹1.5L' },
+  { value: 'medium', label: 'Mid Range', range: '₹2.5L - ₹4L' },
+  { value: 'high', label: 'Premium', range: '₹5L - ₹8L' },
+  { value: 'luxury', label: 'Luxury', range: '₹10L+' },
+];
+
+export default function UploadSection({ onAnalyze, onImageUpload, selectedStyle, setSelectedStyle, budget, setBudget }: Props) {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      processFile(file);
     }
+  };
+
+  const processFile = (file: File) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setUploadedImage(result);
+      onImageUpload(result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      processFile(file);
+    }
+  };
+
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setUploadedImage(null);
+    onImageUpload('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -51,7 +73,7 @@ export default function UploadSection({ onAnalyze, selectedStyle, setSelectedSty
           Redesign Your Room with <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">AI</span>
         </h2>
         <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-          Upload a photo of your room and let our AI analyze it to provide personalized interior design recommendations, color palettes, furniture suggestions, and budget estimates.
+          Upload a photo of your room and our AI will analyze its colors, lighting, and layout to generate a unique, personalized interior design recommendation.
         </p>
       </div>
 
@@ -88,13 +110,10 @@ export default function UploadSection({ onAnalyze, selectedStyle, setSelectedSty
                   alt="Uploaded room"
                   className="w-full h-64 object-cover rounded-xl shadow-md"
                 />
-                <p className="text-sm text-amber-600 font-medium">✓ Image uploaded successfully</p>
+                <p className="text-sm text-amber-600 font-medium">✓ Image uploaded — AI will analyze colors, lighting & layout</p>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setUploadedImage(null);
-                  }}
-                  className="text-xs text-slate-400 hover:text-red-500"
+                  onClick={handleRemove}
+                  className="text-xs text-slate-400 hover:text-red-500 underline"
                 >
                   Remove & upload different image
                 </button>
@@ -125,15 +144,15 @@ export default function UploadSection({ onAnalyze, selectedStyle, setSelectedSty
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {styles.map((style) => (
                 <button
-                  key={style}
-                  onClick={() => setSelectedStyle(style)}
+                  key={style.value}
+                  onClick={() => setSelectedStyle(style.value)}
                   className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                    selectedStyle === style
+                    selectedStyle === style.value
                       ? 'bg-amber-500 text-white shadow-md shadow-amber-200'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
-                  {style}
+                  {style.label}
                 </button>
               ))}
             </div>
@@ -168,9 +187,14 @@ export default function UploadSection({ onAnalyze, selectedStyle, setSelectedSty
           {/* Analyze Button */}
           <button
             onClick={onAnalyze}
-            className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-2xl font-semibold text-lg hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg shadow-amber-200 hover:shadow-xl hover:shadow-amber-300 active:scale-[0.98]"
+            disabled={!uploadedImage}
+            className={`w-full py-4 rounded-2xl font-semibold text-lg transition-all ${
+              uploadedImage
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-200 hover:shadow-xl hover:shadow-amber-300 active:scale-[0.98]'
+                : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+            }`}
           >
-            ✨ Analyze My Room
+            {uploadedImage ? '✨ Analyze My Room' : '📷 Upload an image first'}
           </button>
         </div>
       </div>
@@ -178,9 +202,9 @@ export default function UploadSection({ onAnalyze, selectedStyle, setSelectedSty
       {/* Features */}
       <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { icon: '🎨', title: 'Color Palette', desc: 'AI-recommended colors that harmonize with your space' },
-          { icon: '🛋️', title: 'Furniture Layout', desc: 'Optimal furniture placement for functionality & aesthetics' },
-          { icon: '💰', title: 'Budget Planning', desc: 'Detailed cost breakdown in your currency' },
+          { icon: '🎨', title: 'Color Analysis', desc: 'AI extracts dominant colors from your image and recommends a harmonious palette' },
+          { icon: '🛋️', title: 'Smart Layout', desc: 'Personalized furniture placement based on your room\'s dimensions and lighting' },
+          { icon: '💰', title: 'Budget Planning', desc: 'Detailed cost breakdown tailored to your selected budget range' },
         ].map((feature) => (
           <div key={feature.title} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
             <div className="text-3xl mb-3">{feature.icon}</div>
